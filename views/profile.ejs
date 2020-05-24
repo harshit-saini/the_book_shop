@@ -1,0 +1,35 @@
+<%- contentFor('header')  %> 
+<%-  include('./partials/_navbar.ejs')  %> 
+
+
+<%- contentFor("body") %> 
+<!-- user info -->
+<div class="container-fluid mt-4">
+  <h1 class=" mb-5  text-center text-capitalize">Welcome <%= user.name %> </h1>
+  <div class="row">
+    <!--  -->
+    <div class="col-12 col-md-2 offset-md-1">
+      <div>
+        <img class="img-fluid img-thumbnail" src="<%= user.profilePicPath  %> " alt="">
+
+      </div>
+    </div>
+    <!--  -->
+    <div class="col-12 col-md-9 d-flex justify-content-start flex-column">
+      <h4>Name : <%= user.name  %> </h4>
+      <p>Email : <%= user.email  %> </p>
+      <div>
+
+        <a href="/users/edit-profile" class="btn btn-secondary">Edit Profile</a>
+        <a href="/users/logout" class="btn btn-secondary">Logout</a>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- products that user had purchesed  -->
+<div class="container-fluid mt-5">
+  <h4 class="p-1 bg-success mx-5 rounded-pill text-center  text-uppercase text-white ">Items That You Have Purchased</h4>
+</div>

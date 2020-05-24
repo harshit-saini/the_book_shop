@@ -1,0 +1,109 @@
+<%# ---- header%>
+<%- contentFor('header')  %> 
+<%-  include('./partials/_navbar.ejs')  %> 
+
+<%# ---- footer %>
+<%- contentFor('footer')  %> 
+<%- include ./partials/_footer  %> 
+
+<%# ---- body%>
+<%- contentFor('body')  %> 
+<%-include ./partials/_carousel.ejs  %> 
+<%# **** main  heading : Starts  %> 
+<div class="container-fluid text-center bg-success p-3">
+  <h1 class="text-white text-capitalize">get the latest and greatest book at just &#8377; 1</h1>
+  <p class="text-white p-0 small" >This is just a project i am not selling any thing</p>
+</div>
+<%# **** main  heading : Ends %> 
+
+<%#  **** top 5 hot books : Starts %> 
+<div class="container-fluid mt-3 bg-grey px-0">
+  <div class=" justify-content-center glide">
+    <h2 class="p-3 w-100 text-center">Our Hottest Top 6 Books</h2>
+    <div class=" glide__track" data-glide-el="track" >
+      <div class="glide__slides d-flex align-content-stretch">
+
+          <% hotBooks.forEach(hotBook => {%> 
+            <%- include('partials/_productCard', {hotBook: hotBook}); %>
+          <%  }) %> 
+          
+      </div>
+    </div>
+    <%# ---- arrows   %> 
+    <div class="glide__arrows" data-glide-el="controls">
+      <button class="glide__arrow glide__arrow--left bg-primary" data-glide-dir="<"> <i class="fa fa-arrow-left"></i> </button>
+      <button class="glide__arrow glide__arrow--right bg-primary" data-glide-dir=">"><i class="fa fa-arrow-right"></i></button>
+    </div>
+    <%# ---- bullets  %> 
+    <!-- <div class="glide__bullets bg-primary p-2 rounded-pill" data-glide-el="controls[nav]">
+      <button class="glide__bullet" data-glide-dir="=0"></button>
+      <button class="glide__bullet" data-glide-dir="=1"></button>
+      <button class="glide__bullet" data-glide-dir="=2"></button>
+      <button class="glide__bullet" data-glide-dir="=3"></button>
+      <button class="glide__bullet" data-glide-dir="=4"></button>
+      <button class="glide__bullet" data-glide-dir="=5"></button>
+    </div> -->
+  </div>
+</div>
+<%# **** top 5 hot books   %> 
+
+<%# other books : Starts  %> 
+
+<div class="container-fluid mt-5">
+  <h2 class="text-center bg-primary p-3 text-uppercase text-white">Other Cool Books</h2>
+  <div class=" mt-3 d-flex flex-wrap justify-content-around">
+    <%# include ./partials/_productCard  %> 
+
+  </div>
+
+</div>
+<%# other books : Ends  %> 
+
+
+<%# script  %> 
+<%- contentFor('script')  %> 
+<script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+<script>
+  new Glide('.glide', {
+  type: 'slider',
+  startAt: 1,
+  perView: 3,
+  gap:15,
+  autoplay : 2000,
+  keyboard : true,
+  hoverpause : true,
+  peek : 100,
+  breakpoints:{
+    992 :{
+      perView : 2
+    },
+    768 :{
+      perView : 1,
+      peek : 20
+    }
+  },
+  classes :{
+  direction: {
+    ltr: 'glide--ltr',
+    rtl: 'glide--rtl'
+  },
+  slider: 'glide--slider',
+  carousel: 'glide--carousel',
+  swipeable: 'glide--swipeable',
+  dragging: 'glide--dragging',
+  cloneSlide: 'glide__slide--clone',
+  activeNav: 'glide__bullet--active',
+  activeSlide: 'glide__slide--active',
+  disabledArrow: 'glide__arrow--disabled'
+}
+}).mount()
+</script>
+
+
+
+<%# styles %>
+<%- contentFor("style")  %> 
+<link rel="stylesheet" href="/css/glide.core.min.css">
+<link rel="stylesheet" href="/css/glide.theme.min.css">
+
+

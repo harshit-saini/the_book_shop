@@ -1,7 +1,7 @@
 {
-  "name": "node_passport_login",
+  "name": "the_book_shop",
   "version": "2.0.0",
-  "description": "Node.js authentication with Passport",
+  "description": "a Project by harshit saini",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
@@ -11,17 +11,26 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.1.1",
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
     "connect-flash": "^0.1.1",
+    "connect-mongodb-session": "^2.3.1",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "express-ejs-layouts": "^2.5.0",
     "express-session": "^1.15.6",
+    "helmet": "^3.22.0",
     "mongoose": "^5.7.5",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.2",
+    "nodemailer": "^6.4.6",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "dotenv": "^8.2.0",
     "nodemon": "^1.18.9"
   }
 }

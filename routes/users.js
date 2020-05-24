@@ -1,95 +1,144 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const passport = require('passport');
+const crypto = require('crypto')
+
+const userController = require("../controller/usersController");
+const profilePicUpload = require("../uploads/profilePicsUpload")
+
+
+
+const Mail = require('../config/mail');
+
 // Load User model
 const User = require('../models/User');
-const { forwardAuthenticated } = require('../config/auth');
+const Book = require("../models/hot_books");
+const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
+
 
 // Login Page
-router.get('/login', forwardAuthenticated, (req, res) => res.render('login'));
+router.get('/login', forwardAuthenticated, userController.GETLoginPage);
 
 // Register Page
-router.get('/register', forwardAuthenticated, (req, res) => res.render('register'));
+router.get('/register', forwardAuthenticated, userController.GETRegisterPage);
 
 // Register
-router.post('/register', (req, res) => {
-  const { name, email, password, password2 } = req.body;
-  let errors = [];
-
-  if (!name || !email || !password || !password2) {
-    errors.push({ msg: 'Please enter all fields' });
-  }
-
-  if (password != password2) {
-    errors.push({ msg: 'Passwords do not match' });
-  }
-
-  if (password.length < 6) {
-    errors.push({ msg: 'Password must be at least 6 characters' });
-  }
-
-  if (errors.length > 0) {
-    res.render('register', {
-      errors,
-      name,
-      email,
-      password,
-      password2
-    });
-  } else {
-    User.findOne({ email: email }).then(user => {
-      if (user) {
-        errors.push({ msg: 'Email already exists' });
-        res.render('register', {
-          errors,
-          name,
-          email,
-          password,
-          password2
-        });
-      } else {
-        const newUser = new User({
-          name,
-          email,
-          password
-        });
-
-        bcrypt.genSalt(10, (err, salt) => {
-          bcrypt.hash(newUser.password, salt, (err, hash) => {
-            if (err) throw err;
-            newUser.password = hash;
-            newUser
-              .save()
-              .then(user => {
-                req.flash(
-                  'success_msg',
-                  'You are now registered and can log in'
-                );
-                res.redirect('/users/login');
-              })
-              .catch(err => console.log(err));
-          });
-        });
-      }
-    });
-  }
-});
+router.post('/register', userController.POSTRegistrationForm);
 
 // Login
-router.post('/login', (req, res, next) => {
-  passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/users/login',
-    failureFlash: true
-  })(req, res, next);
-});
+router.post('/login', userController.POSTLoginForm);
 
 // Logout
-router.get('/logout', (req, res) => {
-  req.logout();
-  req.flash('success_msg', 'You are logged out');
-  res.redirect('/users/login');
-});
+router.get('/logout', userController.LogOut);
+
+// profile
+router.get("/profile", ensureAuthenticated, userController.GETProfilePage);
+
+//edit profile
+router.get("/edit-profile",ensureAuthenticated, userController.GETEditProfilePage)
+
+
+// post profile edits 
+router.post("/edit-profile", profilePicUpload.single("profilePic") , userController.POSTEditProfile)
+
+// reset password : get page
+router.get("/reset-password", (req, res, next) => {
+  res.render("resetPassword",{
+    title : "reser password",
+  })
+})
+
+// reset password  : post
+router.post("/reset-password", async (req, res, next) => {
+  const emailEntered  = req.body.email;
+  const resultUser  = await User.findOne({email: emailEntered})
+
+
+  // if no user found
+  if (!resultUser) {
+    return res.render("resetPassword",{
+      title : "reser password",
+      error_msg : "Invalid Email",
+    });
+  }
+
+  //if user found
+  var token;
+  crypto.randomBytes(32, (error, buffer) => {
+    if(error){
+      console.log(error);
+     return res.redirect('/reset-password');
+    }
+    token  = buffer.toString('hex');
+    // because crypto is async
+    resultUser.passwordResetToken = token;
+    resultUser.passwordResetTokenExpiresAt = new Date(Date.now() + 3600000);
+    resultUser.save();
+    Mail.passwordReset(emailEntered,token, req);
+
+  })
+
+  res.render("checkEmail", {
+    title : "reset password"
+  });
+
+})
+
+
+
+router.get("/enter-reset-password/:token", async (req, res, next) => {
+  // find the user with this token
+  const tokenReceived = req.params.token;
+  const resultUser = await User.findOne({
+    passwordResetToken : tokenReceived,
+    passwordResetTokenExpiresAt : {$gt : Date.now()}
+  })
+  // if there is no such user 
+  res.render("enterResetPassword", {
+    user : resultUser,
+    title : 'password reset'
+  })
+
+})
+
+
+router.post('/cart', async (req,res,next) => {
+  const bookId = req.body.bookId;
+  req.user.addToCart(bookId);
+  res.redirect('/users/cart')
+})
+
+
+
+router.get("/cart",async (req,res,next) => {
+  await req.user
+  .populate('cart.items.itemId')
+  .execPopulate()
+
+  res.render("cart", {
+    user : req.user,
+    path : req.route.path,
+    loggedIN : req.isAuthenticated(),
+    title: "cart",
+  })
+})
+
+router.post("/modify-cart", (req, res, next) => {
+
+  const addBookId = req.body.addBook;
+  const deleteBookId = req.body.deleteBook;
+  const deleteAllBookId = req.body.deleteAllBook;
+
+  if(addBookId) {
+    req.user.addToCart(addBookId)
+  }
+  if(deleteBookId) {
+    req.user.deleteFromCart(deleteBookId)
+  }
+  if(deleteAllBookId) {
+    req.user.removeFromCart(deleteAllBookId)
+  }
+
+  res.redirect("/users/cart")
+})
 
 module.exports = router;

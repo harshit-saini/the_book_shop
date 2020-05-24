@@ -1,0 +1,20 @@
+<div class="card d-inline-block glide__slide mb-3" style="width: 18rem; ">
+  <!-- <img src="https://picsum.photos/200/300" class="card-img-top product-card-image mt-2" alt="..."> -->
+  <div class="card-body " style="height: 300px;">
+    <h5 class="card-title" style="height: 2rem;"> <%= hotBook.title  %> </h5>
+    <br>
+    <p class="card-text" style="height: 2rem;">
+      Author: <%= hotBook.Author  %> 
+    </p>
+    <p>
+      <%= hotBook.Description %> 
+    </p>
+  </div>
+  <div class="card-footer d-flex justify-content-around">
+    <!-- <a class="btn btn-secondary" href="">Details</a> -->
+    <form action="/users/cart" method="post">
+      <input type="hidden" value="<%= hotBook._id  %>" name="bookId">
+      <button class="btn btn-primary" >Add To Cart</button>
+    </form>
+  </div>
+</div>

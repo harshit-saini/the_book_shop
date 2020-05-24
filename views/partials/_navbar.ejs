@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary ">
+  <a class="navbar-brand" href="/">
+    <img height="40px" width="auto" src="/images/logo.png" alt="the-books-shop-logo">
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav text-capitalize ml-auto">
+      <% if(loggedIN){ %> 
+        <li class="nav-item">
+          <a class="nav-link <%= path === '/cart'? 'active' : '' %>" href="/users/cart"><i class="fa fa-shopping-cart mr-1"></i>cart</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <%= path === '/profile'? 'active' : '' %> "href="/users/profile"><i class="fa fa-user"></i> Profile</a>
+        </li>
+      <% } %> 
+      <% if(!loggedIN) { %> 
+        <li class="nav-item">
+          <a class="nav-link <%= path === '/register'? 'active' : '' %> " href="/users/register"><i class="fa fa-user-plus mr-1"></i> SignUp</a>
+        </li>
+      <% } %> 
+      <% if(!loggedIN) { %> 
+        <li class="nav-item">
+          <a class="nav-link <%= path === '/login'? 'active' : '' %> " href="/users/login"><i class="fa fa-sign-in-alt"></i> Login</a>
+        </li>
+      <% } %> 
+    </ul>
+  </div>
+</nav>
