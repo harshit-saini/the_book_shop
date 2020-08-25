@@ -4,29 +4,28 @@
 
 <%- contentFor('body')  %> 
 <div class="container-fluid mt-5">
-  <h3 class="text-capitalize text-center">hello <span class="border-bottom"><%= user.name  %> </span>this is yout cart </h3>
+  <h3 class="text-capitalize text-center">hello <span class="border-bottom"><%= user.name  %> </span>this is your cart </h3>
+  <span id="user-id" class="d-none"><%= user.id %></span>
 <h4 class="border-bottom mt-5">Books in your cart</h4>
 <br>
-  <div>
+  <div id="cart-items">
     <% user.cart.items.forEach(item => { %>
       <div class="border p-2 mb-3">
         <div>
           <h5><%= item.itemId.title  %> </h5>
           <p>Quantity:  <%= item.quantity  %> </p>
+          <span class="d-none"><%= item.itemId._id %></span>
         </div>
         <div class="d-flex">
-        <form class="m-2" action="/users/modify-cart" method="post">
-          <input type="hidden" value="<%= item.itemId._id  %>" name="addBook">
-          <button class="btn btn-primary">Add 1</button>
-        </form>
-        <form class="m-2" action="/users/modify-cart" method="POST">
-          <input type="hidden" value="<%= item.itemId._id  %>" name="deleteBook">
-          <button class="btn btn-secondary">Delete 1</button>
-        </form>
-        <form class="m-2" action="/users/modify-cart" method="POST">
-          <input type="hidden" value="<%= item.itemId._id  %>" name="deleteAllBook">
-          <button class="btn btn-secondary">Delete All</button>
-        </form>
+        <div class="m-2" action="/users/modify-cart" method="post">
+          <button id="add-btn" class="btn btn-primary">Add 1</button>
+        </div>
+        <div class="m-2" action="/users/modify-cart" method="POST">
+          <button id="delete-btn" class="btn btn-secondary">Delete 1</button>
+        </div>
+        <div class="m-2" action="/users/modify-cart" method="POST">
+          <button id="delete-all-btn" class="btn btn-secondary">Delete All</button>
+        </div>
         </div>
       </div>
 
@@ -34,3 +33,6 @@
 
   </div>
 </div>
+
+<%- contentFor('script')  %> 
+<script src="/js/cart.js"></script>

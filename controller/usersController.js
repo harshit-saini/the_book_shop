@@ -144,7 +144,8 @@ exports.POSTEditProfile = async function(req, res, next){
   try{
     const user  = await User.findOne({_id: req.user._id})
     if(req.file) {
-      user.profilePicPath = `/userProfilePics/${req.file.filename}`;
+      console.log(req.file);
+      user.profilePicPath = `${req.file.location}`;
     }
     user.name = req.body.name;
     await user.save();

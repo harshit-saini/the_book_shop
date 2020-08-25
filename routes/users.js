@@ -13,19 +13,25 @@ const Mail = require('../config/mail');
 const User = require('../models/User');
 const Book = require("../models/hot_books");
 const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
+const { route } = require('.');
 
 
-// Login Page
-router.get('/login', forwardAuthenticated, userController.GETLoginPage);
+// **** Login 
+router.route("/login")
+  .get(forwardAuthenticated, userController.GETLoginPage)
+  .post(userController.POSTLoginForm)
 
-// Register Page
-router.get('/register', forwardAuthenticated, userController.GETRegisterPage);
 
-// Register
-router.post('/register', userController.POSTRegistrationForm);
+// **** Register
+router.route("/register")
+  .get(forwardAuthenticated, userController.GETRegisterPage)
+  .post(userController.POSTRegistrationForm)
 
-// Login
-router.post('/login', userController.POSTLoginForm);
+
+// **** edit-profile
+router.route("/edit-profile")
+  .get(ensureAuthenticated, userController.GETEditProfilePage)
+  .post(profilePicUpload.single("profilePic") , userController.POSTEditProfile)
 
 // Logout
 router.get('/logout', userController.LogOut);
@@ -33,12 +39,11 @@ router.get('/logout', userController.LogOut);
 // profile
 router.get("/profile", ensureAuthenticated, userController.GETProfilePage);
 
-//edit profile
-router.get("/edit-profile",ensureAuthenticated, userController.GETEditProfilePage)
 
+router.route("/edit-profile")
+  .get(ensureAuthenticated, userController.GETEditProfilePage)
+  .post(profilePicUpload.single("profilePic") , userController.POSTEditProfile)
 
-// post profile edits 
-router.post("/edit-profile", profilePicUpload.single("profilePic") , userController.POSTEditProfile)
 
 // reset password : get page
 router.get("/reset-password", (req, res, next) => {

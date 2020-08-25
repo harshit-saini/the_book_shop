@@ -8,6 +8,11 @@ const bodyParser = require("body-parser")
 const connectMongoDBSession = require("connect-mongodb-session")(session);
 const helmet = require('helmet');
 const compression = require("compression");
+const morgan = require("morgan");
+
+
+
+
 
 if(process.env.NODE_ENV != 'production') require("dotenv").config();
 
@@ -42,6 +47,9 @@ const servercert = fs.readFileSync("server.cert")
 
 app.use(helmet());
 app.use(compression());
+if(process.env.NODE_ENV != "production") {
+  app.use(morgan("dev"));
+}
 
 // EJS
 app.use(expressLayouts);
@@ -85,6 +93,7 @@ app.use(function(req, res, next) {
 app.use('/', require('./routes/index.js'));
 app.use('/users', require('./routes/users.js'));
 app.use('/admin', require("./routes/admin.js"));
+app.use("/cart", require("./routes/cart"));
 app.use((req, res, next) => {
   res.render("error/404",{
     title : "404"
