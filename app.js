@@ -8,7 +8,6 @@ const bodyParser = require("body-parser")
 const connectMongoDBSession = require("connect-mongodb-session")(session);
 const helmet = require('helmet');
 const compression = require("compression");
-const morgan = require("morgan");
 
 
 
@@ -48,6 +47,7 @@ const servercert = fs.readFileSync("server.cert")
 app.use(helmet());
 app.use(compression());
 if(process.env.NODE_ENV != "production") {
+  const morgan = require("morgan");
   app.use(morgan("dev"));
 }
 
